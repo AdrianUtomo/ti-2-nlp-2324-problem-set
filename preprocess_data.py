@@ -39,7 +39,8 @@ class Preprocess:
   """
   def split_sentences(self, data: list[str]) -> list[str]:
     # TODO: Implement based on the given description
-    pass
+    stripped = [i.strip() for i in data]
+    return stripped
   
   """
   - Fungsionalitas method di bawah ini adalah melakukan tokenisasi pada kalimat.
@@ -51,7 +52,17 @@ class Preprocess:
   """
   def tokenize_sentences(self, data: list[str], lower: bool) -> list[list[str]]:
     # TODO: Implement based on the given description
-    pass
+    # Remove non-ascii characters
+    data = [i.encode('ascii', 'ignore').decode('ascii') for i in data]
+
+    # Lowercase
+    if lower:
+      data = [i.lower() for i in data]
+    
+    # Tokenize
+    multi_word_tokenizer = MultiwordTokenizer()
+    tokenized = [multi_word_tokenizer.tokenize(i) for i in data]
+    return tokenized
   
   def get_tokenized_data(self, data: list[str], lower: bool) -> list[list[str]]:
     splitted: list[str] = self.split_sentences(data)
@@ -64,7 +75,14 @@ class Preprocess:
   """
   def word_map(self, data: list[list[str]]) -> dict:
     # TODO: Implement based on the given description
-    pass
+    word_map = {}
+    for sentence in data:
+      for word in sentence:
+        if word in word_map:
+          word_map[word] += 1
+        else:
+          word_map[word] = 1
+    return word_map
   
   """
   - Fungsionalitas pada method di bawah ini adalah melakukan filtering terhadap kata yang kemunculannya di bawah threshold/batasan tertentu.
@@ -75,7 +93,9 @@ class Preprocess:
   """
   def filter_vocab_by_threshold(self, data: list[list[str]], num_threshold: int) -> list[str]:
     # TODO: Implement based on the given description
-    pass
+    word_map = self.word_map(data)
+    filtered = [word for word, count in word_map.items() if count >= num_threshold]
+    return filtered
   
   """
   - Fungsionalitas pada method ini adalah mengganti kata-kata yang kemunculannya di bawah threshold menjadi simbol <unk>.
@@ -85,7 +105,16 @@ class Preprocess:
   """
   def handle_oov_with_unk(self, data: list[list[str]], vocab: list[str], unknown_token='<unk>') -> list[list[str]]:
     # TODO: Implement based on the given description
-    pass
+    handled = []
+    for sentence in data:
+      handled_sentence = []
+      for word in sentence:
+        if word in vocab:
+          handled_sentence.append(word)
+        else:
+          handled_sentence.append(unknown_token)
+      handled.append(handled_sentence)
+    return handled
   
   def preprocess_raw_data(self, train, test, threshold):
     vocab = self.filter_vocab_by_threshold(train, threshold)

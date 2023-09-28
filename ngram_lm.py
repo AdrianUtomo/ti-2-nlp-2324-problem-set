@@ -16,6 +16,16 @@ class NgramModel:
   """
   def generate_n_grams(self, data: list[list[str]], n: int, start_token: str = '<s>', end_token='</s>') -> dict:
     # TODO: Implement based on the given description
+    n_grams = {}
+    for sentence in data:
+      sentence = [start_token] * (n - 1) + sentence + [end_token]
+      for i in range(len(sentence) - n + 1):
+        n_gram = tuple(sentence[i:i+n])
+        if n_gram in n_grams:
+          n_grams[n_gram] += 1
+        else:
+          n_grams[n_gram] = 1
+    return n_grams
     pass
   
   """
@@ -26,6 +36,11 @@ class NgramModel:
   """
   def count_probability(self, predicted_word: str, given_word: list[str], n_gram_counts, n_plus1_gram_counts, vocabulary_size, laplace_number: float = 1.0) -> float:
     # TODO: Implement based on the given description
+    given_word = tuple(given_word)
+    n_gram = given_word + (predicted_word,)
+    n_gram_count = n_gram_counts[n_gram] if n_gram in n_gram_counts else 0
+    given_word_count = n_plus1_gram_counts[given_word] if given_word in n_plus1_gram_counts else 0
+    return (n_gram_count + laplace_number) / (given_word_count + laplace_number * vocabulary_size)
     pass
   
   """
@@ -47,6 +62,13 @@ class NgramModel:
   """
   def count_perplexity(self, sentence, n_gram_counts, n_plus1_gram_counts, vocab_size, start_token='<s>', end_token = '</s>', laplace_number=1.0):
     # TODO: Implement based on the given description
+    sentence = [start_token] + sentence + [end_token]
+    N = len(sentence)
+    product_pi = 1.0
+    for i in range(N):
+      prob = self.count_probability(sentence[i], sentence[:i], n_gram_counts, n_plus1_gram_counts, vocab_size, laplace_number=laplace_number)
+      product_pi *= prob
+    return math.pow(product_pi, -1/N)
     pass
 
 def main():
