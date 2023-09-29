@@ -67,7 +67,7 @@ class NgramModel:
     product_pi = 1.0
     for i in range(N):
       prob = self.count_probability(sentence[i], sentence[:i], n_gram_counts, n_plus1_gram_counts, vocab_size, laplace_number=laplace_number)
-      product_pi *= prob
+      product_pi *= math.log2(prob)
     return math.pow(product_pi, -1/N)
     pass
 
