@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-from aksara import MultiwordTokenizer, BaseTokenizer
+from aksara import BaseTokenizer
 
 class Preprocess:
   def __init__(self) -> None:
