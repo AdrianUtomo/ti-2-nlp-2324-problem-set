@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-from aksara import MultiwordTokenizer
+from aksara import MultiwordTokenizer, BaseTokenizer
 
 class Preprocess:
   def __init__(self) -> None:
@@ -60,7 +60,7 @@ class Preprocess:
       data = [i.lower() for i in data]
     
     # Tokenize
-    multi_word_tokenizer = MultiwordTokenizer()
+    multi_word_tokenizer = BaseTokenizer()
     tokenized = [multi_word_tokenizer.tokenize(i) for i in data]
     return tokenized
   
