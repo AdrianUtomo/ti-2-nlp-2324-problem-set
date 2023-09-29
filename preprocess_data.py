@@ -60,8 +60,8 @@ class Preprocess:
       data = [i.lower() for i in data]
     
     # Tokenize
-    multi_word_tokenizer = BaseTokenizer()
-    tokenized = [multi_word_tokenizer.tokenize(i) for i in data]
+    base_tokenizer = BaseTokenizer()
+    tokenized = [base_tokenizer.tokenize(i)[0] for i in data]
     return tokenized
   
   def get_tokenized_data(self, data: list[str], lower: bool) -> list[list[str]]:
